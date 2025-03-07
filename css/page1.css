@@ -1,0 +1,52 @@
+@import url(../css/styles.css);
+
+/** HEADER **/
+.header{
+    background-color: black;
+}
+
+.contenedor-header{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+.navegacion{
+    display: flex;
+    gap: 5rem;
+}
+
+
+.hipervinculos{
+    display: block;
+    text-align: center;
+    font-size: 1.8rem;
+    color: gray;
+    text-decoration: none;
+}
+
+.active{
+    color: var(--blanco);
+}
+
+.boton{
+    border-radius: 0.5rem;
+    width: 10rem;
+    height: 4rem;
+    color: var(--blanco);
+    border: none;
+    cursor: pointer;
+}
+
+.login{
+    background-color: transparent;
+}
+.register{
+    background-color: #309689;
+    font-weight: 500;
+}
+
+/** HERO **/
+
