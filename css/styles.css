@@ -45,6 +45,10 @@ h4{
     font-size: 2.8rem;
 }
 
+.black-txt{
+    color: black;
+}
+
 .contenedor{
     width: 90%;
 }
@@ -71,4 +75,8 @@ h4{
 
 .no-margin-bottom{
     margin-bottom: 0;
+}
+
+.w-90{
+    width: 90%;
 }
