@@ -48,5 +48,82 @@
     font-weight: 500;
 }
 
-/** HERO **/
+/** HERO SECTION**/
 
+.hero-section{
+    background-image: url(../images/blackBG.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    box-shadow: inset 100px 100px 100px 100px rgba(0, 0, 0, 1);
+}
+
+.contenedor-titulo-hero{
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+}
+
+.contenedor-titulo-hero h1, p{
+    color: var(--blanco);
+}
+
+.contenedor-titulo-hero h1{
+    font-size: 8rem;
+}
+
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: white;
+    width: 60%;
+    height: 10rem;
+    border-radius: 2rem;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.search-container input,
+.search-container select {
+    border: none;
+    padding: 1.2rem;
+    font-size: 1.6rem;
+    outline: none;
+    flex: 1;
+}
+
+.search-container select {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.search-container select:not(:last-child) {
+    border-right: 1px solid #ddd;
+}
+
+.boton-job{
+    height: 100%;
+    width: 15rem;
+}
+
+.contenedor-estadisticas{
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    margin-top: 10rem;
+    padding-bottom: 10rem;
+}
+
+/** LOGO SECTION**/
+
+.logo-section{
+    background-color: black;
+}
+
+.contenedor-logos{
+    display: flex;
+    justify-content: space-between;
+}

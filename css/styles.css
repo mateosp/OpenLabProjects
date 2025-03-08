@@ -11,6 +11,7 @@
 html{
     box-sizing: border-box;
     font-size: 62.5%;
+    scrollbar-width: none;
 }
 
 *, *:before, *:after{
@@ -60,6 +61,14 @@ h4{
     padding: 0;
 }
 
-.centrar-texto{
+.center-text{
     text-align: center;
+}
+
+.no-margin-top{
+    margin-top: 0;
+}
+
+.no-margin-bottom{
+    margin-bottom: 0;
 }
