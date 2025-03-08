@@ -227,3 +227,58 @@
     font-weight: bold;
     float: right;
 }
+
+/** SECCION CATEGORIAS**/
+
+.seccion-categoria{
+    background-color: color-mix(in srgb, #309689 10%, white);
+    padding-bottom: 10rem;
+}
+
+.contenedor-categoria{
+    display: flex;
+    flex-direction: column;
+}
+
+.contenedor-categoria h1{
+    margin-top: 8rem;
+}
+
+.contenedor-categoria p{
+    padding-bottom: 3rem;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    gap: 2rem;
+    max-width: 100%;
+}
+
+.card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    height: 30rem;
+}
+
+.card img{
+    margin-top: 5rem;
+}
+
+.card h3{
+    font-size: 2.8rem;
+    font-weight: 550;
+}
+
+.job-count {
+    display: inline-block;
+    background-color: rgba(48, 150, 137, 0.1);
+    color: #309689;
+    padding: 5px 12px;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
