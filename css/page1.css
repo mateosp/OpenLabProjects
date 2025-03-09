@@ -349,3 +349,84 @@
 .contenedor-company-2 p{
     padding-bottom: 2rem;
 }
+
+/** COSTUMER SECCION **/
+
+.costumer-section{
+    background-color: color-mix(in srgb, #309689 10%, white);
+    padding-bottom: 10rem;
+}
+
+.contenedor-costumers h1{
+    padding-top: 10rem;
+}
+
+.costumer-txt{
+    padding-bottom: 5rem;
+}
+
+.testimonials-container {
+    display: flex;
+    gap: 2rem;
+    max-width: 100%;
+}
+
+/* Tarjetas */
+.testimonial-card {
+    background-color: white;
+    border-radius: 1.5rem;
+    padding: 20px;
+    width: 70%;
+    height: 40rem;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Estrellas */
+.stars {
+    color: gold;
+    font-size: 3rem;
+}
+
+/* Título */
+.testimonial-card h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+/* Texto de opinión */
+.testimonial-card p {
+    font-style: italic;
+    color: #555;
+    margin-top: 3rem;
+}
+
+/* Sección de usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-top: 7rem;
+}
+
+.user-info img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    margin-right: 1rem;
+}
+
+.user-info strong {
+    display: block;
+    font-size: 14px;
+}
+
+.user-info span {
+    font-size: 12px;
+    color: #777;
+}
+
+.user-info-container{
+    display: flex;
+}
