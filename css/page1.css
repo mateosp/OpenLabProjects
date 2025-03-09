@@ -282,3 +282,46 @@
     font-size: 1.4rem;
     font-weight: bold;
 }
+
+/** SECCION INFORMACION COMPAÑIA **/
+
+.contenedor-company-section{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15rem;
+    padding-bottom: 5rem;
+}
+
+.contenedor-company{
+    display: flex;
+    gap: 15rem;
+}
+
+.learn-more{
+    color: #309689;
+    text-decoration: underline;
+}
+
+.company-txt{
+    padding-bottom: 2rem;
+}
+
+.contenedor-caracteristicas-company{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5rem;
+}
+
+.contenedor-caracteristicas-company h1{
+    color: #309689;
+}
+
+.caracteristicas-company h1{
+    margin-bottom: 0;
+}
+
+.caracteristicas-company h4{
+    margin-top: 2rem;
+    margin-bottom: 0;
+    font-weight: bold;
+}
