@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       feedback.className = 'text-red-500 text-sm text-center mt-2';
       setTimeout(()=>{
         feedback.textContent = '';
-      },)
+      }, 3000)
     }
   });
 });
