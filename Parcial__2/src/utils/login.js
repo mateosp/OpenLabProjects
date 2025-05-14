@@ -12,14 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      feedback.textContent = 'Inicio de sesión exitoso ✅';
       feedback.className = 'text-green-600 text-sm text-center mt-2';
 
       setTimeout(() => {
         window.location.href = '/dashboard';
-      }, 1500);
+      });
     } catch (error) {
-      feedback.textContent = error.message;
+      feedback.textContent = 'Correo o contraseña incorrecta';
       feedback.className = 'text-red-500 text-sm text-center mt-2';
     }
   });

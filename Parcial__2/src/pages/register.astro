@@ -1,14 +1,9 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro"
 ---
-
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Registro</title>
-  </head>
-  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
+<BaseLayout title="Registro">
+  <main class="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm mx-4">
       <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Crear cuenta</h1>
       <form id="register-form" class="space-y-4">
         <div>
@@ -36,7 +31,6 @@
         </p>
       </form>
     </div>
-
-    <script type="module" src="/src/utils/auth.js"></script>
-  </body>
-</html>
+  </main>
+  <script type="module" src="/src/utils/auth.js"></script>
+</BaseLayout>

@@ -16,11 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      feedback.textContent = 'Registro exitoso ✅';
       feedback.className = 'text-green-600 text-sm text-center mt-2';
       form.reset();
     } catch (error) {
-      feedback.textContent = error.message;
+      feedback.textContent = 'Este correo ya ha sido registrado';
       feedback.className = 'text-red-500 text-sm text-center mt-2';
       setTimeout(()=>{
         feedback.textContent = '';
