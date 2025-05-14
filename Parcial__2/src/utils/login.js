@@ -11,14 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('password').value;
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Intentando iniciar sesión:', email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Sesión iniciada exitosamente:', userCredential.user.uid);
+      
+      feedback.textContent = 'Iniciando sesión...';
       feedback.className = 'text-green-600 text-sm text-center mt-2';
 
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      });
+      // Redirigir al dashboard inmediatamente
+      window.location.href = '/dashboard';
     } catch (error) {
-      feedback.textContent = 'Correo o contraseña incorrecta';
+      console.error('Error al iniciar sesión:', error);
+      feedback.textContent = error.code === 'auth/invalid-credential' 
+        ? 'Correo o contraseña incorrecta' 
+        : 'Error al iniciar sesión';
       feedback.className = 'text-red-500 text-sm text-center mt-2';
     }
   });

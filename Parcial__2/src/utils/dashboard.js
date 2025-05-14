@@ -32,59 +32,120 @@ document.addEventListener('DOMContentLoaded', () => {
   let projectToDelete = null;
   let unsubscribeProjects = null;
 
+  // Mostrar estado de carga
+  function showLoading() {
+    projectsGrid.innerHTML = `
+      <div class="col-span-full text-center py-12">
+        <p class="text-gray-500 dark:text-gray-400">Cargando proyectos...</p>
+      </div>
+    `;
+  }
+
   // Escuchar cambio de estado de autenticación
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
+    console.log('Estado de autenticación cambiado:', user ? 'Usuario autenticado' : 'No hay usuario');
+    
     if (user) {
       currentUser = user;
+      console.log('Usuario actual:', user.email, 'UID:', user.uid);
       emailDisplay.textContent = `Estás conectado como: ${user.email}`;
-      setupProjectsListener();
+      
+      showLoading();
+
+      try {
+        // Verificar la conexión con Firestore y el token de autenticación
+        console.log('Verificando token de autenticación...');
+        const token = await user.getIdToken();
+        console.log('Token de autenticación válido');
+
+        // Verificar la conexión con Firestore
+        console.log('Intentando conectar con Firestore...');
+        const testQuery = query(collection(db, 'projects'));
+        const testSnapshot = await getDocs(testQuery);
+        console.log('Conexión con Firestore establecida');
+
+        // Configurar listener para los proyectos del usuario actual
+        const projectsQuery = query(
+          collection(db, 'projects'),
+          where('authorId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
+
+        console.log('Configurando listener para proyectos de:', user.uid);
+
+        // Limpiar listener anterior si existe
+        if (unsubscribeProjects) {
+          console.log('Limpiando listener anterior');
+          unsubscribeProjects();
+        }
+
+        // Suscribirse a cambios en tiempo real
+        unsubscribeProjects = onSnapshot(projectsQuery, 
+          (snapshot) => {
+            console.log('Snapshot recibido, documentos:', snapshot.size);
+            projectsGrid.innerHTML = '';
+
+            if (snapshot.empty) {
+              console.log('No se encontraron proyectos');
+              projectsGrid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                  <p class="text-gray-500 dark:text-gray-400">No tienes proyectos aún. ¡Crea uno nuevo!</p>
+                </div>
+              `;
+              return;
+            }
+
+            snapshot.forEach((doc) => {
+              console.log('Proyecto encontrado:', doc.id, doc.data());
+              const project = { id: doc.id, ...doc.data() };
+              const projectCard = createProjectCard(project);
+              projectsGrid.appendChild(projectCard);
+            });
+          }, 
+          (error) => {
+            console.error('Error en el listener de proyectos:', error);
+            if (error.code === 'permission-denied') {
+              console.error('Error de permisos en Firestore');
+              showFeedback('Error de permisos al acceder a los proyectos', 'error');
+            } else if (error.code === 'unauthenticated') {
+              console.error('Usuario no autenticado');
+              showFeedback('Sesión expirada, por favor inicia sesión nuevamente', 'error');
+              setTimeout(() => {
+                window.location.href = '/login';
+              }, 2000);
+            } else {
+              showFeedback('Error al cargar proyectos: ' + error.message, 'error');
+            }
+          }
+        );
+      } catch (error) {
+        console.error('Error al inicializar Firestore:', error);
+        if (error.code === 'permission-denied') {
+          showFeedback('No tienes permisos para acceder a los proyectos', 'error');
+        } else if (error.code === 'unauthenticated') {
+          showFeedback('Sesión expirada, por favor inicia sesión nuevamente', 'error');
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+        } else {
+          showFeedback('Error al conectar con la base de datos: ' + error.message, 'error');
+        }
+        projectsGrid.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <p class="text-red-500">Error al conectar con la base de datos. Por favor, recarga la página.</p>
+          </div>
+        `;
+      }
     } else {
+      console.log('No hay usuario autenticado, redirigiendo a login');
       if (unsubscribeProjects) {
+        console.log('Limpiando listener de proyectos');
         unsubscribeProjects();
         unsubscribeProjects = null;
       }
       window.location.href = '/login';
     }
   });
-
-  // Configurar listener en tiempo real para proyectos
-  function setupProjectsListener() {
-    if (!currentUser) return;
-
-    // Limpiar listener anterior si existe
-    if (unsubscribeProjects) {
-      unsubscribeProjects();
-    }
-
-    const projectsQuery = query(
-      collection(db, 'projects'),
-      where('authorId', '==', currentUser.uid),
-      orderBy('createdAt', 'desc')
-    );
-
-    // Suscribirse a cambios en tiempo real
-    unsubscribeProjects = onSnapshot(projectsQuery, (snapshot) => {
-      projectsGrid.innerHTML = '';
-
-      if (snapshot.empty) {
-        projectsGrid.innerHTML = `
-          <div class="col-span-full text-center py-12">
-            <p class="text-gray-500 dark:text-gray-400">No tienes proyectos aún. ¡Crea uno nuevo!</p>
-          </div>
-        `;
-        return;
-      }
-
-      snapshot.forEach((doc) => {
-        const project = { id: doc.id, ...doc.data() };
-        const projectCard = createProjectCard(project);
-        projectsGrid.appendChild(projectCard);
-      });
-    }, (error) => {
-      console.error('Error al escuchar cambios:', error);
-      showFeedback('Error al cargar proyectos', 'error');
-    });
-  }
 
   // Crear tarjeta de proyecto
   function createProjectCard(project) {
@@ -181,9 +242,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Manejar envío del formulario
   projectForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    if (!currentUser) {
+      console.error('Intento de crear proyecto sin usuario autenticado');
+      showFeedback('Error: Sesión no válida', 'error');
+      return;
+    }
+
     const projectId = document.getElementById('project-id').value;
     const title = document.getElementById('project-title').value.trim();
     const description = document.getElementById('project-description').value.trim();
+
+    console.log('Intentando guardar proyecto:', { projectId, title, description, userId: currentUser.uid });
 
     // Cerrar el modal inmediatamente
     closeModals();
@@ -191,61 +261,69 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (projectId) {
         // Actualizar proyecto existente
-        await updateDoc(doc(db, 'projects', projectId), {
+        console.log('Actualizando proyecto existente:', projectId);
+        const projectRef = doc(db, 'projects', projectId);
+        await updateDoc(projectRef, {
           title,
           description,
           updatedAt: serverTimestamp()
         });
+        console.log('Proyecto actualizado exitosamente');
         showFeedback('Proyecto actualizado exitosamente');
       } else {
         // Crear nuevo proyecto
-        await addDoc(collection(db, 'projects'), {
+        console.log('Creando nuevo proyecto');
+        const newProject = {
           title,
           description,
           authorId: currentUser.uid,
+          authorEmail: currentUser.email,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
-        });
+        };
+        
+        const docRef = await addDoc(collection(db, 'projects'), newProject);
+        console.log('Proyecto creado exitosamente con ID:', docRef.id);
         showFeedback('Proyecto creado exitosamente');
       }
     } catch (error) {
       console.error('Error al guardar proyecto:', error);
-      showFeedback('Error al guardar el proyecto', 'error');
+      showFeedback('Error al guardar el proyecto: ' + error.message, 'error');
     }
   });
 
   // Manejar eliminación de proyecto
   deleteConfirmBtn.addEventListener('click', async () => {
-    const projectId = projectToDelete;
-    if (!projectId || !currentUser) return;
-
-    // Cerrar el modal inmediatamente
-    closeModals();
-
-    // Eliminar el proyecto de la UI inmediatamente
-    const projectElement = document.querySelector(`[data-id="${projectId}"]`)?.closest('.bg-white');
-    if (projectElement) {
-      projectElement.remove();
+    if (!projectToDelete || !currentUser) {
+      console.error('No hay proyecto seleccionado o usuario no autenticado');
+      showFeedback('Error: No se puede eliminar el proyecto', 'error');
+      return;
     }
 
-    // Si no hay más proyectos, mostrar mensaje
-    if (projectsGrid.children.length === 0) {
-      projectsGrid.innerHTML = `
-        <div class="col-span-full text-center py-12">
-          <p class="text-gray-500 dark:text-gray-400">No tienes proyectos aún. ¡Crea uno nuevo!</p>
-        </div>
-      `;
-    }
-
-    // Realizar la eliminación en Firestore en segundo plano
     try {
-      const projectRef = doc(db, 'projects', projectId);
+      console.log('Intentando eliminar proyecto:', projectToDelete);
+      
+      // Verificar que el proyecto existe y pertenece al usuario
+      const projectRef = doc(db, 'projects', projectToDelete);
+      const projectDoc = await getDoc(projectRef);
+      
+      if (!projectDoc.exists()) {
+        throw new Error('El proyecto no existe');
+      }
+
+      const projectData = projectDoc.data();
+      if (projectData.authorId !== currentUser.uid) {
+        throw new Error('No tienes permisos para eliminar este proyecto');
+      }
+
+      // Eliminar el proyecto
       await deleteDoc(projectRef);
+      console.log('Proyecto eliminado exitosamente');
       showFeedback('Proyecto eliminado exitosamente');
+      closeModals();
     } catch (error) {
       console.error('Error al eliminar proyecto:', error);
-      showFeedback('Error al eliminar el proyecto', 'error');
-      // Si hay error, el listener de Firestore restaurará el proyecto
+      showFeedback('Error al eliminar el proyecto: ' + error.message, 'error');
     }
   });
 
