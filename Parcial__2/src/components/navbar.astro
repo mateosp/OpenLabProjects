@@ -6,60 +6,65 @@
           <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="">
         </a>
       </div>
-      <div class="flex lg:hidden">
-        <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
-          <span class="sr-only">Open main menu</span>
-          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
-      </div>
+
       <div class="hidden lg:flex lg:gap-x-12">
-       
       </div>
 
-      <div class="nav-toggle flex">
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end py-2 px-4">
-          <a href="/login" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+      <div class="flex items-center">
+        <!-- Botones de navegación desktop -->
+        <div class="nav-toggle hidden lg:flex items-center gap-4 mr-4">
+          <a href="/login" class="text-sm font-semibold text-gray-900 dark:text-white hover:text-gray-600 dark:hover:text-gray-300">Log in <span aria-hidden="true">&rarr;</span></a>
+          <a href="/register" class="rounded-md bg-slate-800 dark:bg-slate-700 py-2 px-4 text-sm font-semibold text-white hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors">Register</a>
         </div>
-        <button class="rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-          <a href="/register" class="text-sm/6 font-semibold text-white-900">Register</a>
-        </button>
-      </div>
 
-      
+        <!-- Contenedor de botones de acción (dark mode y menú móvil) -->
+        <div class="flex items-center gap-3">
+          <!-- El botón de dark mode se insertará aquí por JavaScript -->
+          <!-- Botón de menú móvil -->
+          <button type="button" id="mobile-menu-button" class="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <span class="sr-only">Open main menu</span>
+            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </nav>
-    <!-- Mobile menu, show/hide based on menu open state. -->
-    <div class="lg:hidden" role="dialog" aria-modal="true">
-      <!-- Background backdrop, show/hide based on slide-over state. -->
-      <div class="fixed inset-0 z-50"></div>
-      <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="lg:hidden hidden" role="dialog" aria-modal="true">
+      <!-- Background backdrop -->
+      <div class="fixed inset-0 z-50 bg-gray-900/80"></div>
+      
+      <!-- Menu panel -->
+      <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white dark:bg-gray-900 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
         <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
+          <a href="/" class="-m-1.5 p-1.5">
             <span class="sr-only">Your Company</span>
             <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="">
           </a>
-          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+          <button type="button" id="close-menu-button" class="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
             <span class="sr-only">Close menu</span>
-            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
+        
         <div class="mt-6 flow-root">
           <div class="-my-6 divide-y divide-gray-500/10">
             <div class="space-y-2 py-6">
+              <!-- Aquí se pueden agregar elementos adicionales del menú si se necesitan -->
             </div>
             
-            <div class="py-6">
-              <a href="/login" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
+            <div class="py-6 flex flex-col gap-4">
+              <a href="/login" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Log in</a>
+              <a href="/register" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600 text-center">Register</a>
             </div>
-            <button class="rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-              Register
-            </button>
-            
           </div>
         </div>
       </div>
     </div>
-  </header>
+</header>
+
+<script type="module" src="/src/utils/mobileMenu.js"></script>

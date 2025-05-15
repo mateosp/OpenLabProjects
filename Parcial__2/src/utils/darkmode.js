@@ -52,9 +52,9 @@ function updateThemeButton(isDark) {
 
 // Inicializar el tema cuando se carga la página
 document.addEventListener('DOMContentLoaded', () => {
-  // Agregar el botón de tema al navbar si no existe
-  const navbar = document.querySelector('nav');
-  if (navbar && !document.getElementById('theme-toggle')) {
+  // Agregar el botón de tema al contenedor de acciones
+  const actionButtonsContainer = document.querySelector('.flex.items-center.gap-3');
+  if (actionButtonsContainer && !document.getElementById('theme-toggle')) {
     const themeButton = document.createElement('button');
     themeButton.id = 'theme-toggle';
     themeButton.className = 'p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2';
@@ -69,14 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     themeButton.addEventListener('click', toggleTheme);
     
-    // Buscar el botón de registro y colocar el botón de tema después de él
-    const registerButton = navbar.querySelector('nav-toggle');
-    if (registerButton) {
-      registerButton.parentNode.insertBefore(themeButton, registerButton.nextSibling);
-    } else {
-      // Si no se encuentra el botón de registro, insertar al final
-      navbar.appendChild(themeButton);
-    }
+    // Insertar el botón al principio del contenedor de acciones
+    actionButtonsContainer.insertBefore(themeButton, actionButtonsContainer.firstChild);
 
     // Actualizar el ícono inicial
     updateThemeButton(document.documentElement.classList.contains('dark'));
