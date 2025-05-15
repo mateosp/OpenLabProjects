@@ -6,9 +6,9 @@ export { renderers } from '../renderers.mjs';
 
 const $$Explorar = createComponent(($$result, $$props, $$slots) => {
   return renderTemplate``;
-}, "/Users/mateosuarezpaez/Desktop/Proyectos/Parcial-DesarrolloWeb/Parcial-DesarrolloWeb/Parcial__2/src/pages/explorar.astro", void 0);
+}, "/Users/mateosuarezpaez/Desktop/Proyectos/OpenLab/OpenLabProjects/src/pages/explorar.astro", void 0);
 
-const $$file = "/Users/mateosuarezpaez/Desktop/Proyectos/Parcial-DesarrolloWeb/Parcial-DesarrolloWeb/Parcial__2/src/pages/explorar.astro";
+const $$file = "/Users/mateosuarezpaez/Desktop/Proyectos/OpenLab/OpenLabProjects/src/pages/explorar.astro";
 const $$url = "/explorar";
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
