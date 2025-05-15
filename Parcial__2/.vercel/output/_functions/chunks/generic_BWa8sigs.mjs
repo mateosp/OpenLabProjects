@@ -1,9 +1,9 @@
 import { j as joinPaths, i as isRemotePath } from './path_BuZodYwm.mjs';
-import { A as AstroError, E as ExpectedImage, L as LocalImageUsedWrongly, i as MissingImageDimension, U as UnsupportedImageFormat, I as IncompatibleDescriptorOptions, j as UnsupportedImageConversion, t as toStyleString, k as NoImageMetadata, F as FailedToFetchRemoteImageDimensions, l as ExpectedImageOptions, n as ExpectedNotESMImage, o as InvalidImageService, c as createComponent, b as createAstro, p as ImageMissingAlt, m as maybeRenderHead, d as addAttribute, s as spreadAttributes, a as renderTemplate, q as ExperimentalFontsNotEnabled, u as FontFamilyNotFound, v as unescapeHTML } from './astro/server_Cy8J98JV.mjs';
+import { A as AstroError, E as ExpectedImage, L as LocalImageUsedWrongly, i as MissingImageDimension, U as UnsupportedImageFormat, I as IncompatibleDescriptorOptions, j as UnsupportedImageConversion, t as toStyleString, k as NoImageMetadata, F as FailedToFetchRemoteImageDimensions, l as ExpectedImageOptions, n as ExpectedNotESMImage, o as InvalidImageService, c as createComponent, b as createAstro, p as ImageMissingAlt, m as maybeRenderHead, d as addAttribute, s as spreadAttributes, a as renderTemplate, q as ExperimentalFontsNotEnabled, u as FontFamilyNotFound, v as unescapeHTML } from './astro/server_CZqtZvMq.mjs';
 import 'clsx';
 import * as mime from 'mrmime';
 import 'kleur/colors';
-import './internal_BsTt5pTQ.mjs';
+import '../renderers.mjs';
 
 const VALID_SUPPORTED_FORMATS = [
   "jpeg",
@@ -1256,7 +1256,7 @@ async function getConfiguredImageService() {
   if (!globalThis?.astroAsset?.imageService) {
     const { default: service } = await import(
       // @ts-expect-error
-      './sharp_Ca5dMRk1.mjs'
+      './sharp_DpiFUm8S.mjs'
     ).catch((e) => {
       const error = new AstroError(InvalidImageService);
       error.cause = e;
@@ -1501,13 +1501,18 @@ const $$Picture = createComponent(async ($$result, $$props, $$slots) => {
   })}  <img${addAttribute(fallbackImage.src, "src")}${spreadAttributes(attributes)}${addAttribute(className, "class")}> </picture>`;
 }, "/Users/mateosuarezpaez/Desktop/Proyectos/Parcial-DesarrolloWeb/Parcial-DesarrolloWeb/Parcial__2/node_modules/astro/components/Picture.astro", void 0);
 
+const mod = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const $$Astro = createAstro();
-const $$Font = createComponent(async ($$result, $$props, $$slots) => {
+const $$Font = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$Font;
-  const { fontsData } = await import('./internal_BsTt5pTQ.mjs').then(n => n.i).catch(() => {
+  const { fontsData } = mod;
+  if (!fontsData) {
     throw new AstroError(ExperimentalFontsNotEnabled);
-  });
+  }
   const { cssVariable, preload = false } = Astro2.props;
   const data = fontsData.get(cssVariable);
   if (!data) {
