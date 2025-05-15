@@ -1,6 +1,6 @@
 // src/scripts/auth.js
 import { auth } from './firebase.js';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('register-form');
@@ -38,4 +38,51 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 3000);
     }
   });
+});
+
+// Función para actualizar la UI según el estado de autenticación
+function updateAuthUI(user) {
+  const authButtons = document.getElementById('auth-buttons');
+  const userButtons = document.getElementById('user-buttons');
+  const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+  const mobileUserButtons = document.getElementById('mobile-user-buttons');
+
+  if (user) {
+    // Usuario autenticado
+    authButtons?.classList.add('hidden');
+    userButtons?.classList.remove('hidden');
+    mobileAuthButtons?.classList.add('hidden');
+    mobileUserButtons?.classList.remove('hidden');
+  } else {
+    // Usuario no autenticado
+    authButtons?.classList.remove('hidden');
+    userButtons?.classList.add('hidden');
+    mobileAuthButtons?.classList.remove('hidden');
+    mobileUserButtons?.classList.add('hidden');
+  }
+}
+
+// Función para manejar el cierre de sesión
+async function handleLogout() {
+  try {
+    await signOut(auth);
+    window.location.href = '/';
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    alert('Error al cerrar sesión. Por favor, intente nuevamente.');
+  }
+}
+
+// Escuchar cambios en el estado de autenticación
+auth.onAuthStateChanged((user) => {
+  updateAuthUI(user);
+});
+
+// Agregar event listeners para los botones de cierre de sesión
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutButton = document.getElementById('logout-button');
+  const mobileLogoutButton = document.getElementById('mobile-logout-button');
+
+  logoutButton?.addEventListener('click', handleLogout);
+  mobileLogoutButton?.addEventListener('click', handleLogout);
 });
