@@ -1,15 +1,21 @@
 {
-    "functions": {
-      "api/index.js": {
-        "runtime": "nodejs18.x",
-        "handler": ".vercel/output/functions/_render.func/dist/server/entry.mjs"
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "dist"
+        }
       }
-    },
+    ],
     "routes": [
       {
+        "handle": "filesystem"
+      },
+      {
         "src": "/(.*)",
-        "dest": "api/index.js"
+        "dest": "/api/entry.js"
       }
     ]
   }
-  

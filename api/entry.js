@@ -1,0 +1,1 @@
+export {handler as default} from '../.vercel/output/_functions/entry.mjs'
