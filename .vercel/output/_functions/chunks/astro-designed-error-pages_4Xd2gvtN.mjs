@@ -12,7 +12,7 @@ const ACTION_QUERY_PARAMS$1 = {
   actionName: "_action"};
 const ACTION_RPC_ROUTE_PATTERN = "/_actions/[...path]";
 
-const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "SITE": undefined, "SSR": true};
+const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "PUBLIC_FIREBASE_APIKEY": "AIzaSyCTKhMwzC2K-N13L9RLRtA7igyvb82q44Y", "PUBLIC_FIREBASE_APPID": "1:733961652082:web:8dd1ef525f5013e7197feb", "PUBLIC_FIREBASE_AUTHDOMAIN": "openlab-9e26b.firebaseapp.com", "PUBLIC_FIREBASE_MEASUREMENTID": "G-JVH2TZL4B4", "PUBLIC_FIREBASE_MESSAGINGSENDERID": "733961652082", "PUBLIC_FIREBASE_PROJECTID": "openlab-9e26b", "PUBLIC_FIREBASE_STORAGEBUCKET": "openlab-9e26b.firebasestorage.app", "SITE": undefined, "SSR": true};
 const ACTION_QUERY_PARAMS = ACTION_QUERY_PARAMS$1;
 const codeToStatusMap = {
   // Implemented from tRPC error code table
