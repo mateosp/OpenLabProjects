@@ -5,6 +5,8 @@ import vercel from '@astrojs/vercel/serverless'; // <- usa "serverless"
 export default defineConfig({
   output: 'server',
   outDir: './dist',
-  adapter: vercel(),
+  adapter: vercel({
+    includeFiles: ['./vercel.json']
+  }),
   integrations: [tailwind()],
 });
