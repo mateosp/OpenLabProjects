@@ -8,6 +8,8 @@ function updateAuthUI(user) {
   const userButtons = document.getElementById('user-buttons');
   const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
   const mobileUserButtons = document.getElementById('mobile-user-buttons');
+  const mainNavLinks = document.getElementById('main-nav-links');
+  const mobileMainNavLinks = document.getElementById('mobile-main-nav-links');
 
   if (user) {
     // Usuario autenticado
@@ -15,12 +17,18 @@ function updateAuthUI(user) {
     userButtons?.classList.remove('hidden');
     mobileAuthButtons?.classList.add('hidden');
     mobileUserButtons?.classList.remove('hidden');
+    mainNavLinks?.classList.remove('hidden');
+    mainNavLinks?.classList.add('flex');
+    mobileMainNavLinks?.classList.remove('hidden');
   } else {
     // Usuario no autenticado
     authButtons?.classList.remove('hidden');
     userButtons?.classList.add('hidden');
     mobileAuthButtons?.classList.remove('hidden');
     mobileUserButtons?.classList.add('hidden');
+    mainNavLinks?.classList.remove('flex');
+    mainNavLinks?.classList.add('hidden');
+    mobileMainNavLinks?.classList.add('hidden');
   }
 }
 
