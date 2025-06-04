@@ -1,5 +1,5 @@
-import { db } from './firebase.js';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db, auth } from './firebase.js';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove, getDoc, runTransaction, getDocs, where } from 'firebase/firestore';
 
 document.addEventListener('DOMContentLoaded', () => {
   const projectsGrid = document.getElementById('projects-grid');
@@ -26,6 +26,24 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="flex flex-col h-full">
         <div class="flex justify-between items-start mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">${project.title}</h3>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <button class="like-btn ${project.likes?.includes(auth.currentUser?.uid) ? 'text-green-500' : 'text-gray-400'}" data-project-id="${project.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                </svg>
+              </button>
+              <span class="likes-count text-sm font-medium text-gray-600 dark:text-gray-400">${project.likes?.length || 0}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="dislike-btn ${project.dislikes?.includes(auth.currentUser?.uid) ? 'text-red-500' : 'text-gray-400'}" data-project-id="${project.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5 0v2a2 2 0 01-2 2h-2.5" />
+                </svg>
+              </button>
+              <span class="dislikes-count text-sm font-medium text-gray-600 dark:text-gray-400">${project.dislikes?.length || 0}</span>
+            </div>
+          </div>
         </div>
         <p class="text-gray-600 dark:text-gray-400 flex-grow">${project.description}</p>
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -42,6 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     card.appendChild(mainContent);
+
+    // Agregar event listeners para likes/dislikes
+    const likeBtn = mainContent.querySelector('.like-btn');
+    const dislikeBtn = mainContent.querySelector('.dislike-btn');
+
+    likeBtn.addEventListener('click', () => handleLike(project.id));
+    dislikeBtn.addEventListener('click', () => handleDislike(project.id));
 
     // Sección de comentarios
     const commentsSection = document.createElement('div');
@@ -191,7 +216,7 @@ function initializeCommentForm(form, projectId) {
 
     try {
       const { auth, db } = await import('./firebase.js');
-      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      const { collection, addDoc, serverTimestamp, doc, updateDoc, increment, runTransaction } = await import('firebase/firestore');
 
       const user = auth.currentUser;
       if (!user) {
@@ -199,12 +224,21 @@ function initializeCommentForm(form, projectId) {
         return;
       }
 
-      await addDoc(collection(db, 'comments'), {
-        projectId,
-        text,
-        authorId: user.uid,
-        authorEmail: user.email,
-        createdAt: serverTimestamp()
+      await runTransaction(db, async (transaction) => {
+        // Crear el comentario
+        await addDoc(collection(db, 'comments'), {
+          projectId,
+          text,
+          authorId: user.uid,
+          authorEmail: user.email,
+          createdAt: serverTimestamp()
+        });
+
+        // Actualizar puntos del usuario
+        const userRef = doc(db, 'users', user.uid);
+        await updateDoc(userRef, {
+          points: increment(2)
+        });
       });
 
       textarea.value = '';
@@ -214,4 +248,129 @@ function initializeCommentForm(form, projectId) {
       showFeedback('Error al publicar el comentario', 'error');
     }
   });
+}
+
+// Función para recalcular puntos del usuario
+async function recalculateUserPoints(userId) {
+  try {
+    // Obtener todos los proyectos del usuario
+    const projectsQuery = query(
+      collection(db, 'projects'),
+      where('authorId', '==', userId)
+    );
+    const projectsSnapshot = await getDocs(projectsQuery);
+    
+    let totalPoints = 0;
+    
+    // Puntos base por proyectos creados
+    totalPoints += projectsSnapshot.size; // +1 por cada proyecto
+
+    // Sumar likes y restar dislikes de cada proyecto
+    for (const projectDoc of projectsSnapshot.docs) {
+      const projectData = projectDoc.data();
+      totalPoints += (projectData.likes?.length || 0); // +1 por cada like
+      totalPoints -= (projectData.dislikes?.length || 0); // -1 por cada dislike
+    }
+
+    // Actualizar puntos del usuario
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      points: totalPoints
+    });
+
+    return totalPoints;
+  } catch (error) {
+    console.error('Error al recalcular puntos:', error);
+    throw error;
+  }
+}
+
+// Manejar likes
+async function handleLike(projectId) {
+  if (!auth.currentUser) {
+    showFeedback('Debes iniciar sesión para dar like', 'error');
+    return;
+  }
+
+  try {
+    const userId = auth.currentUser.uid;
+    const projectRef = doc(db, 'projects', projectId);
+    const projectDoc = await getDoc(projectRef);
+    
+    if (!projectDoc.exists()) {
+      throw new Error('Proyecto no encontrado');
+    }
+
+    const projectData = projectDoc.data();
+    const hasLiked = projectData.likes?.includes(userId);
+    const authorId = projectData.authorId;
+
+    await runTransaction(db, async (transaction) => {
+      if (hasLiked) {
+        // Quitar like
+        await updateDoc(projectRef, {
+          likes: arrayRemove(userId)
+        });
+      } else {
+        // Agregar like y quitar dislike si existe
+        await updateDoc(projectRef, {
+          likes: arrayUnion(userId),
+          dislikes: arrayRemove(userId)
+        });
+      }
+      
+      // Recalcular puntos del autor
+      await recalculateUserPoints(authorId);
+    });
+
+    showFeedback(hasLiked ? 'Like removido' : 'Like agregado');
+  } catch (error) {
+    console.error('Error al manejar like:', error);
+    showFeedback('Error al procesar like', 'error');
+  }
+}
+
+// Manejar dislikes
+async function handleDislike(projectId) {
+  if (!auth.currentUser) {
+    showFeedback('Debes iniciar sesión para dar dislike', 'error');
+    return;
+  }
+
+  try {
+    const userId = auth.currentUser.uid;
+    const projectRef = doc(db, 'projects', projectId);
+    const projectDoc = await getDoc(projectRef);
+    
+    if (!projectDoc.exists()) {
+      throw new Error('Proyecto no encontrado');
+    }
+
+    const projectData = projectDoc.data();
+    const hasDisliked = projectData.dislikes?.includes(userId);
+    const authorId = projectData.authorId;
+
+    await runTransaction(db, async (transaction) => {
+      if (hasDisliked) {
+        // Quitar dislike
+        await updateDoc(projectRef, {
+          dislikes: arrayRemove(userId)
+        });
+      } else {
+        // Agregar dislike y quitar like si existe
+        await updateDoc(projectRef, {
+          dislikes: arrayUnion(userId),
+          likes: arrayRemove(userId)
+        });
+      }
+      
+      // Recalcular puntos del autor
+      await recalculateUserPoints(authorId);
+    });
+
+    showFeedback(hasDisliked ? 'Dislike removido' : 'Dislike agregado');
+  } catch (error) {
+    console.error('Error al manejar dislike:', error);
+    showFeedback('Error al procesar dislike', 'error');
+  }
 } 

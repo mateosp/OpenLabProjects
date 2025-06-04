@@ -13,7 +13,9 @@ import {
   serverTimestamp,
   onSnapshot,
   orderBy,
-  getDoc
+  getDoc,
+  runTransaction,
+  increment
 } from 'firebase/firestore';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,6 +43,41 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  // Función para recalcular puntos del usuario
+  async function recalculateUserPoints(userId) {
+    try {
+      // Obtener todos los proyectos del usuario
+      const projectsQuery = query(
+        collection(db, 'projects'),
+        where('authorId', '==', userId)
+      );
+      const projectsSnapshot = await getDocs(projectsQuery);
+      
+      let totalPoints = 0;
+      
+      // Puntos base por proyectos creados
+      totalPoints += projectsSnapshot.size; // +1 por cada proyecto
+
+      // Sumar likes y restar dislikes de cada proyecto
+      for (const projectDoc of projectsSnapshot.docs) {
+        const projectData = projectDoc.data();
+        totalPoints += (projectData.likes?.length || 0); // +1 por cada like
+        totalPoints -= (projectData.dislikes?.length || 0); // -1 por cada dislike
+      }
+
+      // Actualizar puntos del usuario
+      const userRef = doc(db, 'users', userId);
+      await updateDoc(userRef, {
+        points: totalPoints
+      });
+
+      return totalPoints;
+    } catch (error) {
+      console.error('Error al recalcular puntos:', error);
+      throw error;
+    }
+  }
+
   // Escuchar cambio de estado de autenticación
   onAuthStateChanged(auth, async (user) => {
     console.log('Estado de autenticación cambiado:', user ? 'Usuario autenticado' : 'No hay usuario');
@@ -50,6 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Usuario actual:', user.email, 'UID:', user.uid);
       emailDisplay.textContent = `Estás conectado como: ${user.email}`;
       
+      // Recalcular puntos del usuario al iniciar sesión
+      try {
+        await recalculateUserPoints(user.uid);
+      } catch (error) {
+        console.error('Error al recalcular puntos iniciales:', error);
+      }
+
       showLoading();
 
       try {
@@ -279,11 +323,20 @@ document.addEventListener('DOMContentLoaded', () => {
           authorId: currentUser.uid,
           authorEmail: currentUser.email,
           createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
+          likes: [],
+          dislikes: []
         };
         
-        const docRef = await addDoc(collection(db, 'projects'), newProject);
-        console.log('Proyecto creado exitosamente con ID:', docRef.id);
+        await runTransaction(db, async (transaction) => {
+          // Crear el proyecto
+          const docRef = await addDoc(collection(db, 'projects'), newProject);
+          
+          // Recalcular puntos del usuario
+          await recalculateUserPoints(currentUser.uid);
+        });
+
+        console.log('Proyecto creado exitosamente');
         showFeedback('Proyecto creado exitosamente');
       }
     } catch (error) {

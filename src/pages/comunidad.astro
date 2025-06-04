@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Comunidad">
+  <main class="min-h-[calc(100vh-64px)] bg-gray-50 dark:bg-gray-900 pt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div class="p-6">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Ranking de la Comunidad</h1>
+          
+          <!-- Sistema de Puntos -->
+          <div class="mb-8 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Sistema de Puntos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="flex items-center gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Crear Proyecto</p>
+                    <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">+1 pt</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="flex items-center gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                  </svg>
+                  <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Like</p>
+                    <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">+1 pt</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="flex items-center gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5 0v2a2 2 0 01-2 2h-2.5" />
+                  </svg>
+                  <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Dislike</p>
+                    <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">-1 pt</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ranking -->
+          <div id="users-ranking" class="space-y-4">
+            <div class="animate-pulse space-y-4">
+              <div class="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+              <div class="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+              <div class="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { db } from '../utils/firebase.js';
+  import { collection, query, orderBy, limit, getDocs, onSnapshot } from 'firebase/firestore';
+  import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+
+  interface UserData {
+    nombres?: string;
+    apellidos?: string;
+    points?: number;
+    photoURL?: string;
+  }
+
+  async function loadRanking() {
+    const rankingElement = document.getElementById('users-ranking');
+    if (!rankingElement) return;
+
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, orderBy('points', 'desc'), limit(5));
+      
+      // Suscribirse a cambios en tiempo real
+      onSnapshot(q, (querySnapshot) => {
+        rankingElement.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+          rankingElement.innerHTML = `
+            <div class="text-center text-gray-500 dark:text-gray-400 p-4">
+              No hay usuarios registrados aún.
+            </div>
+          `;
+          return;
+        }
+        
+        querySnapshot.docs.forEach((docSnapshot: QueryDocumentSnapshot<DocumentData>, index: number) => {
+          const userData = docSnapshot.data() as UserData;
+          const rankingItem = document.createElement('div');
+          
+          // Determinar la clase de medalla según la posición
+          const medalClass = index === 0 ? 'bg-yellow-100 dark:bg-yellow-900/20' :
+                           index === 1 ? 'bg-gray-100 dark:bg-gray-700/50' :
+                           index === 2 ? 'bg-amber-100 dark:bg-amber-900/20' :
+                           'bg-white dark:bg-gray-800';
+          
+          rankingItem.className = `flex items-center justify-between p-4 ${medalClass} rounded-lg shadow transition-all hover:shadow-md`;
+          rankingItem.innerHTML = `
+            <div class="flex items-center gap-4">
+              <div class="flex items-center justify-center w-8 h-8 rounded-full ${
+                index === 0 ? 'bg-yellow-500' :
+                index === 1 ? 'bg-gray-400' :
+                index === 2 ? 'bg-amber-600' :
+                'bg-gray-200 dark:bg-gray-700'
+              }">
+                <span class="text-white font-bold">#${index + 1}</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900 dark:text-white">${userData.nombres || 'Usuario'} ${userData.apellidos || ''}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">${userData.points || 0} puntos</p>
+              </div>
+            </div>
+          `;
+          rankingElement.appendChild(rankingItem);
+        });
+      });
+    } catch (error) {
+      console.error('Error al cargar el ranking:', error);
+      rankingElement.innerHTML = `
+        <div class="text-center text-red-500 dark:text-red-400 p-4">
+          Error al cargar el ranking. Por favor, intenta de nuevo más tarde.
+        </div>
+      `;
+    }
+  }
+
+  // Cargar el ranking cuando la página esté lista
+  document.addEventListener('DOMContentLoaded', loadRanking);
+</script> 

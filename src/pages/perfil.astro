@@ -4,131 +4,180 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Mi Perfil">
   <main class="min-h-[calc(100vh-64px)] bg-gray-50 dark:bg-gray-900 pt-20">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Mi Perfil</h1>
-        
-        <form id="profile-form" class="space-y-6">
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <!-- Nombres -->
-            <div>
-              <label for="nombres" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Nombres
-              </label>
-              <input
-                type="text"
-                id="nombres"
-                name="nombres"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                required
-              />
-            </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Perfil Principal -->
+        <div class="lg:col-span-2">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Mi Perfil</h1>
+            
+            <form id="profile-form" class="space-y-6">
+              <!-- Foto de perfil -->
+              <div class="flex flex-col items-center sm:items-start gap-4">
+                <div>
+                  <label for="photoURL" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Foto de Perfil
+                  </label>
+                  <input
+                    type="text"
+                    id="photoURL"
+                    name="photoURL"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    placeholder="URL de la foto de perfil"
+                  />
+                </div>
+              </div>
 
-            <!-- Apellidos -->
-            <div>
-              <label for="apellidos" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Apellidos
-              </label>
-              <input
-                type="text"
-                id="apellidos"
-                name="apellidos"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                required
-              />
-            </div>
+              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <!-- Nombres -->
+                <div>
+                  <label for="nombres" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Nombres
+                  </label>
+                  <input
+                    type="text"
+                    id="nombres"
+                    name="nombres"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    required
+                  />
+                </div>
 
-            <!-- Edad -->
-            <div>
-              <label for="edad" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Edad
-              </label>
-              <input
-                type="number"
-                id="edad"
-                name="edad"
-                min="1"
-                max="120"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                required
-              />
-            </div>
+                <!-- Apellidos -->
+                <div>
+                  <label for="apellidos" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Apellidos
+                  </label>
+                  <input
+                    type="text"
+                    id="apellidos"
+                    name="apellidos"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    required
+                  />
+                </div>
 
-            <!-- Sexo -->
-            <div>
-              <label for="sexo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Sexo
-              </label>
-              <select
-                id="sexo"
-                name="sexo"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                required
-              >
-                <option value="">Seleccionar...</option>
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-                <option value="otro">Otro</option>
-                <option value="prefiero_no_decir">Prefiero no decir</option>
-              </select>
+                <!-- Edad -->
+                <div>
+                  <label for="edad" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Edad
+                  </label>
+                  <input
+                    type="number"
+                    id="edad"
+                    name="edad"
+                    min="1"
+                    max="120"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    required
+                  />
+                </div>
+
+                <!-- Sexo -->
+                <div>
+                  <label for="sexo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Sexo
+                  </label>
+                  <select
+                    id="sexo"
+                    name="sexo"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    required
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                    <option value="otro">Otro</option>
+                    <option value="prefiero_no_decir">Prefiero no decir</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- LinkedIn -->
+              <div>
+                <label for="linkedin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Perfil de LinkedIn
+                </label>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                  <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:text-sm">
+                    linkedin.com/in/
+                  </span>
+                  <input
+                    type="text"
+                    id="linkedin"
+                    name="linkedin"
+                    class="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    placeholder="tu-perfil"
+                  />
+                </div>
+              </div>
+
+              <!-- Descripción -->
+              <div>
+                <label for="descripcion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Sobre mí
+                </label>
+                <div class="mt-1">
+                  <textarea
+                    id="descripcion"
+                    name="descripcion"
+                    rows="4"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    placeholder="Cuéntanos un poco sobre ti..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  id="cancel-button"
+                  class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Guardar
+                </button>
+              </div>
+            </form>
+
+            <!-- Mensaje de estado -->
+            <div id="status-message" class="mt-4 hidden">
+              <p class="text-sm text-gray-500 dark:text-gray-400"></p>
             </div>
           </div>
+        </div>
 
-          <!-- LinkedIn -->
-          <div>
-            <label for="linkedin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Perfil de LinkedIn
-            </label>
-            <div class="mt-1 flex rounded-md shadow-sm">
-              <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:text-sm">
-                linkedin.com/in/
-              </span>
-              <input
-                type="text"
-                id="linkedin"
-                name="linkedin"
-                class="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                placeholder="tu-perfil"
-              />
+        <!-- Sección de Comunidad -->
+        <div class="lg:col-span-1">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Comunidad</h2>
+            
+            <!-- Puntos del Usuario -->
+            <div class="mb-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tus Puntos</h3>
+              <p id="user-points" class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">0</p>
+              <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <p>• Crear proyecto: +1 punto</p>
+                <p>• Like: +1 punto</p>
+                <p>• Dislike: -1 punto</p>
+              </div>
+            </div>
+
+            <!-- Ranking -->
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Top Usuarios</h3>
+              <div id="users-ranking" class="space-y-3">
+                <div class="animate-pulse">
+                  <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- Descripción -->
-          <div>
-            <label for="descripcion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Sobre mí
-            </label>
-            <div class="mt-1">
-              <textarea
-                id="descripcion"
-                name="descripcion"
-                rows="4"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                placeholder="Cuéntanos un poco sobre ti..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="flex justify-end space-x-3">
-            <button
-              type="button"
-              id="cancel-button"
-              class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Guardar
-            </button>
-          </div>
-        </form>
-
-        <!-- Mensaje de estado -->
-        <div id="status-message" class="mt-4 hidden">
-          <p class="text-sm text-gray-500 dark:text-gray-400"></p>
         </div>
       </div>
     </div>
@@ -139,6 +188,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   import { auth, db } from '../utils/firebase.js';
   import { doc, getDoc, setDoc } from 'firebase/firestore';
   import { onAuthStateChanged } from 'firebase/auth';
+  import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
   // Definir tipos
   interface ProfileData {
@@ -148,6 +198,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     sexo?: string;
     linkedin?: string;
     descripcion?: string;
+    photoURL?: string;
+    points?: number;
   }
 
   // Referencias a elementos del DOM con tipos
@@ -185,16 +237,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       if (docSnap.exists()) {
         const data = docSnap.data() as ProfileData;
+        
+        // Actualizar puntos del usuario
+        const userPointsElement = document.getElementById('user-points');
+        if (userPointsElement) {
+          userPointsElement.textContent = (data.points || 0).toString();
+        }
+
+        // Cargar resto de datos del perfil
         Object.entries(data).forEach(([key, value]) => {
-          const input = document.getElementById(key) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
-          if (input) {
-            input.value = value?.toString() || '';
+          if (key !== 'points') {
+            const input = document.getElementById(key) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+            if (input) {
+              input.value = value?.toString() || '';
+            }
           }
         });
       }
+
+      // Cargar ranking
+      await loadRanking();
     } catch (error) {
       console.error('Error al cargar el perfil:', error);
       showStatus('Error al cargar el perfil', true);
+    }
+  }
+
+  // Cargar ranking de usuarios
+  async function loadRanking(): Promise<void> {
+    try {
+      const rankingElement = document.getElementById('users-ranking');
+      if (!rankingElement) return;
+
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, orderBy('points', 'desc'), limit(5));
+      const querySnapshot = await getDocs(q);
+
+      rankingElement.innerHTML = '';
+
+      querySnapshot.forEach((docSnapshot) => {
+        const userData = docSnapshot.data() as ProfileData;
+        const rankingItem = document.createElement('div');
+        rankingItem.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg';
+        rankingItem.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-lg font-semibold ${querySnapshot.docs.indexOf(docSnapshot) === 0 ? 'text-yellow-500' : querySnapshot.docs.indexOf(docSnapshot) === 1 ? 'text-gray-400' : querySnapshot.docs.indexOf(docSnapshot) === 2 ? 'text-amber-600' : 'text-gray-600 dark:text-gray-400'}">#${querySnapshot.docs.indexOf(docSnapshot) + 1}</span>
+            <div>
+              <p class="font-medium text-gray-900 dark:text-white">${userData.nombres || 'Usuario'} ${userData.apellidos || ''}</p>
+            </div>
+          </div>
+          <span class="font-semibold text-indigo-600 dark:text-indigo-400">${userData.points || 0} pts</span>
+        `;
+        rankingElement.appendChild(rankingItem);
+      });
+    } catch (error) {
+      console.error('Error al cargar el ranking:', error);
     }
   }
 
