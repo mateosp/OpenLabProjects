@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { db } from '../../utils/firebase.js';
+
+const { id } = Astro.params;
+---
+
+<BaseLayout title="Perfil de Usuario">
+  <main class="min-h-[calc(100vh-64px)] bg-gray-50 dark:bg-gray-900 pt-20">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="profile-container" class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <!-- El contenido del perfil se cargará dinámicamente -->
+        <div class="animate-pulse p-6">
+          <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
+          <div class="space-y-4">
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  // Tipos
+  interface UserProfile {
+    nombres?: string;
+    apellidos?: string;
+    edad?: number;
+    sexo?: string;
+    linkedin?: string;
+    descripcion?: string;
+  }
+
+  type SexoFormatos = {
+    masculino: string;
+    femenino: string;
+    otro: string;
+    prefiero_no_decir: string;
+  };
+
+  async function loadUserProfile(userId: string): Promise<void> {
+    const container = document.getElementById('profile-container');
+    if (!container) return;
+
+    try {
+      const { doc, getDoc } = await import('firebase/firestore');
+      const { db } = await import('../../utils/firebase.js');
+      
+      const docRef = doc(db, 'users', userId);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        showError('Usuario no encontrado');
+        return;
+      }
+
+      const userData = docSnap.data() as UserProfile;
+      displayProfile(userData);
+    } catch (error) {
+      console.error('Error al cargar el perfil:', error);
+      showError('Error al cargar el perfil del usuario');
+    }
+  }
+
+  function displayProfile(userData: UserProfile): void {
+    const container = document.getElementById('profile-container');
+    if (!container) return;
+
+    const linkedinUrl = userData.linkedin ? `https://linkedin.com/in/${userData.linkedin}` : null;
+    
+    container.innerHTML = `
+      <div class="p-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          ${userData.nombres || ''} ${userData.apellidos || ''}
+        </h1>
+        
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            ${userData.edad ? `
+              <div>
+                <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Edad</h2>
+                <p class="mt-1 text-sm text-gray-900 dark:text-white">${userData.edad} años</p>
+              </div>
+            ` : ''}
+            
+            ${userData.sexo ? `
+              <div>
+                <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Sexo</h2>
+                <p class="mt-1 text-sm text-gray-900 dark:text-white">${formatSexo(userData.sexo)}</p>
+              </div>
+            ` : ''}
+          </div>
+
+          ${linkedinUrl ? `
+            <div>
+              <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">LinkedIn</h2>
+              <a 
+                href="${linkedinUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="mt-1 inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
+              >
+                Ver perfil de LinkedIn
+                <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          ` : ''}
+
+          ${userData.descripcion ? `
+            <div>
+              <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Sobre mí</h2>
+              <p class="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-line">
+                ${userData.descripcion}
+              </p>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  function formatSexo(sexo: string): string {
+    const formatos: SexoFormatos = {
+      masculino: 'Masculino',
+      femenino: 'Femenino',
+      otro: 'Otro',
+      prefiero_no_decir: 'Prefiero no decir'
+    };
+    return formatos[sexo as keyof SexoFormatos] || sexo;
+  }
+
+  function showError(message: string): void {
+    const container = document.getElementById('profile-container');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="p-6 text-center">
+        <p class="text-red-500 dark:text-red-400">${message}</p>
+      </div>
+    `;
+  }
+
+  // Obtener el ID del usuario de la URL y cargar el perfil
+  const urlParts = window.location.pathname.split('/');
+  const userId = urlParts[urlParts.length - 1];
+
+  if (userId) {
+    loadUserProfile(userId);
+  } else {
+    showError('ID de usuario no válido');
+  }
+</script> 

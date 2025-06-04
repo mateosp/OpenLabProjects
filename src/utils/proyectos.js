@@ -30,7 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="text-gray-600 dark:text-gray-400 flex-grow">${project.description}</p>
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            <span class="font-medium">Autor:</span> ${project.authorEmail}
+            <span class="font-medium">Autor:</span> 
+            <a href="/usuario/${project.authorId}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
+              ${project.authorEmail}
+            </a>
           </p>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
             <span class="font-medium">Creado:</span> ${project.createdAt?.toDate().toLocaleDateString() || 'N/A'}
